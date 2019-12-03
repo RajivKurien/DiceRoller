@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import kotlin.random.Random
 
-class SixSidedDie(value: Int = 0) : ViewModel() {
+class SixSidedDieViewModel(value: Int = 0) : ViewModel() {
 
     private val diceValue: MutableLiveData<Int> = MutableLiveData(value)
 

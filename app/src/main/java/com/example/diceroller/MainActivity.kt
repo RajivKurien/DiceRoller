@@ -14,8 +14,8 @@ import java.time.format.DateTimeFormatter
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private var leftDice = SixSidedDie()
-    private var rightDice = SixSidedDie()
+    private var leftDice = SixSidedDieViewModel()
+    private var rightDice = SixSidedDieViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
