@@ -3,11 +3,12 @@ package com.example.diceroller
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
+import com.example.diceroller.databinding.ActivityMainBinding
 import java.time.Instant
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
@@ -15,25 +16,20 @@ import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var leftDiceImage: ImageView
-    private lateinit var rightDiceImage: ImageView
+    private lateinit var binding: ActivityMainBinding
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
-        leftDiceImage = findViewById(R.id.left_dice_image)
-        rightDiceImage = findViewById(R.id.right_dice_image)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding.apply {
+            rollButton.setOnClickListener { rollDice() }
+            countUpButton.setOnClickListener { countUp() }
+            resetButton.setOnClickListener { reset() }
+        }
 
-        val rollButton: Button = findViewById(R.id.roll_button)
-        val countUpButton: Button = findViewById(R.id.count_up_button)
-        val resetButton: Button = findViewById(R.id.reset_button)
-        rollButton.setOnClickListener { rollDice() }
-        countUpButton.setOnClickListener { countUp() }
-        resetButton.setOnClickListener { reset() }
-
-        goodMorningToast(this.applicationContext)
+        welcomeToast(this.applicationContext)
     }
 
     private fun reset() {
@@ -42,7 +38,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun goodMorningToast(context: Context) =
+    private fun welcomeToast(context: Context) =
         Toast.makeText(context, daytimeMessage(), Toast.LENGTH_SHORT).show()
 
     private fun rollDice() {
@@ -51,8 +47,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun countUp() {
-        setLeftDiceImage(nextDiceValue(currentDiceValue(leftDiceImage)))
-        setRightDiceImage(nextDiceValue(currentDiceValue(rightDiceImage)))
+        setLeftDiceImage(nextDiceValue(currentDiceValue(binding.leftDiceImage)))
+        setRightDiceImage(nextDiceValue(currentDiceValue(binding.rightDiceImage)))
     }
 
     private fun nextDiceValue(number: Int): Int = when {
@@ -60,17 +56,17 @@ class MainActivity : AppCompatActivity() {
         else -> number
     }
 
-    private fun setRightDiceImage(i: Int) = setDiceImage(i, rightDiceImage)
+    private fun setRightDiceImage(i: Int) = setDiceImage(i, binding.rightDiceImage)
 
-    private fun setLeftDiceImage(i: Int) = setDiceImage(i, leftDiceImage)
+    private fun setLeftDiceImage(i: Int) = setDiceImage(i, binding.leftDiceImage)
 
     private fun setDiceImage(i: Int, imageView: ImageView) {
-        val drawableResource = diceImageResourceId(i)
+        val drawableResource = diceImageResource(i)
         imageView.setImageResource(drawableResource)
         imageView.tag = drawableResource
     }
 
-    private fun diceImageResourceId(i: Int): Int = when (i) {
+    private fun diceImageResource(i: Int): Int = when (i) {
         1 -> R.drawable.dice_1
         2 -> R.drawable.dice_2
         3 -> R.drawable.dice_3
