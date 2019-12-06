@@ -22,5 +22,5 @@ enum class Dice(val value: Int) {
 }
 
 data class SixSidedDice(val value: Dice = Dice.randomDice()) {
-    fun next(): SixSidedDice = SixSidedDice(Dice.nextFrom(value))
+    fun countUp(): SixSidedDice = SixSidedDice(Dice.nextFrom(value))
 }

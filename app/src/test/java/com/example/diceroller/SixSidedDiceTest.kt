@@ -9,7 +9,7 @@ class SixSidedDiceTest {
     @Test
     fun `next increments die value by one`() {
         Dice.values().forEach {
-            val actualDie = SixSidedDice(it).next()
+            val actualDie = SixSidedDice(it).countUp()
             assertEquals(SixSidedDice(Dice.nextFrom(it)), actualDie)
         }
     }

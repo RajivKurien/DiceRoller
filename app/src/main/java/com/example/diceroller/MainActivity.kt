@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
+import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -16,8 +17,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    private var diceViewModel = DiceViewModel()
     private val resourceFinder = ImageFinder(AndroidDiceImageResourceFetcher())
+    private var diceViewModel = DiceViewModel(resourceFinder)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,19 +30,31 @@ class MainActivity : AppCompatActivity() {
             resetButton.setOnClickListener { reset() }
         }
 
-        diceViewModel.liveData.observe(this, Observer { setDiceImages(it) })
+        diceViewModel.liveData.observe(this, Observer { updateDiceImages(it) })
 
         welcomeToast(this.applicationContext)
     }
 
-    private fun setDiceImages(map: Map<DiceKey, SixSidedDice>) {
-        val leftImage = resourceFinder.getImageResource(map[DiceKey.LEFT])
-        binding.leftDiceImage.setImageResource(leftImage)
-        binding.leftDiceImage.tag = leftImage
+    private fun updateDiceImages(diceRollerEvent: DiceRollerEvent) =
+        when (val event = diceRollerEvent) {
+            is DiceRollerEvent.Reset ->
+                updateDiceDrawables(R.drawable.empty_dice, R.drawable.empty_dice)
+            is DiceRollerEvent.NewDice ->
+                updateDiceDrawables(event.leftImage, event.rightImage)
+        }
 
-        val rightImage = resourceFinder.getImageResource(map[DiceKey.RIGHT])
-        binding.rightDiceImage.setImageResource(rightImage)
-        binding.rightDiceImage.tag = rightImage
+    private fun updateDiceDrawables(
+        @DrawableRes leftDrawable: Int,
+        @DrawableRes rightDrawable: Int
+    ) {
+        binding.leftDiceImage.apply {
+            setImageResource(leftDrawable)
+            tag = leftDrawable
+        }
+        binding.rightDiceImage.apply {
+            setImageResource(rightDrawable)
+            tag = rightDrawable
+        }
     }
 
     private fun reset() {
@@ -56,7 +69,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun countUp() {
-        diceViewModel.next()
+        diceViewModel.countUp()
     }
 
     private fun daytimeMessage(): String {

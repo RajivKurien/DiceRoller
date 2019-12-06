@@ -11,13 +11,27 @@ interface ResourceFetcher {
 }
 
 class ImageFinder(private val resourceFetcher: ResourceFetcher) {
-    fun getImageResource(dice: SixSidedDice?) = when (dice) {
-        SixSidedDice(Dice.ONE) -> resourceFetcher.fetchOne()
-        SixSidedDice(Dice.TWO) -> resourceFetcher.fetchTwo()
-        SixSidedDice(Dice.THREE) -> resourceFetcher.fetchThree()
-        SixSidedDice(Dice.FOUR) -> resourceFetcher.fetchFour()
-        SixSidedDice(Dice.FIVE) -> resourceFetcher.fetchFive()
-        SixSidedDice(Dice.SIX) -> resourceFetcher.fetchSix()
-        else -> resourceFetcher.fetchEmpty()
-    }
+//    fun getImageResource(diceRollerEvent: DiceRollerEvent): Int {
+//
+//
+//        return when (val event = diceRollerEvent) {
+//            is DiceRollerEvent.Reset -> {
+//                resourceFetcher.fetchEmpty()
+//            }
+//            is DiceRollerEvent.NewDice -> {
+//                getDiceImage(event.twoDice.leftDice.value)
+//                getDiceImage(event.twoDice.rightDice.value)
+//            }
+//        }
+//    }
+
+    fun getDiceImage(dice: Dice): Int =
+        when (dice) {
+            Dice.ONE -> resourceFetcher.fetchOne()
+            Dice.TWO -> resourceFetcher.fetchTwo()
+            Dice.THREE -> resourceFetcher.fetchThree()
+            Dice.FOUR -> resourceFetcher.fetchFour()
+            Dice.FIVE -> resourceFetcher.fetchFive()
+            Dice.SIX -> resourceFetcher.fetchSix()
+        }
 }
