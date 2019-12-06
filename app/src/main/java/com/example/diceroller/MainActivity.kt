@@ -18,6 +18,7 @@ class MainActivity : AppCompatActivity() {
 
     private var diceViewModel = DiceViewModel()
     private val resourceFinder = ImageFinder(AndroidDiceImageResourceFetcher())
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -29,12 +30,18 @@ class MainActivity : AppCompatActivity() {
         }
 
         diceViewModel.liveData.observe(this, Observer { setDiceImages(it) })
+
         welcomeToast(this.applicationContext)
     }
 
-    private fun setDiceImages(map: Map<DiceKey, SixSidedDie>) {
-        binding.leftDiceImage.setImageResource(resourceFinder.getImageResource(map[DiceKey.LEFT]))
-        binding.rightDiceImage.setImageResource(resourceFinder.getImageResource(map[DiceKey.RIGHT]))
+    private fun setDiceImages(map: Map<DiceKey, SixSidedDice>) {
+        val leftImage = resourceFinder.getImageResource(map[DiceKey.LEFT])
+        binding.leftDiceImage.setImageResource(leftImage)
+        binding.leftDiceImage.tag = leftImage
+
+        val rightImage = resourceFinder.getImageResource(map[DiceKey.RIGHT])
+        binding.rightDiceImage.setImageResource(rightImage)
+        binding.rightDiceImage.tag = rightImage
     }
 
     private fun reset() {

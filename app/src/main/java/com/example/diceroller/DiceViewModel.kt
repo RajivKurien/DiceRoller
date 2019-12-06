@@ -4,12 +4,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class DiceViewModel(
-    leftDie: SixSidedDie = SixSidedDie(),
-    rightDie: SixSidedDie = SixSidedDie()
-) :
-    ViewModel() {
+    leftDice: SixSidedDice = SixSidedDice(),
+    rightDice: SixSidedDice = SixSidedDice()
+) : ViewModel() {
 
-    val liveData = MutableLiveData(diceMap(leftDie, rightDie))
+    val liveData = MutableLiveData(diceMap(leftDice, rightDice))
 
     fun next() {
         liveData.value = liveData.value.orEmpty()
@@ -18,15 +17,15 @@ class DiceViewModel(
     }
 
     fun roll() {
-        liveData.value = diceMap(SixSidedDie(), SixSidedDie())
+        liveData.value = diceMap(SixSidedDice(), SixSidedDice())
     }
-
-    private fun diceMap(leftDie: SixSidedDie, rightDie: SixSidedDie) =
-        mapOf(DiceKey.LEFT to leftDie, DiceKey.RIGHT to rightDie)
 
     fun reset() {
         liveData.value = emptyMap()
     }
+
+    private fun diceMap(leftDice: SixSidedDice, rightDice: SixSidedDice) =
+        mapOf(DiceKey.LEFT to leftDice, DiceKey.RIGHT to rightDice)
 }
 
 sealed class DiceKey {

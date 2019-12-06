@@ -11,13 +11,13 @@ interface ResourceFetcher {
 }
 
 class ImageFinder(private val resourceFetcher: ResourceFetcher) {
-    fun getImageResource(die: SixSidedDie?) = when (die) {
-        SixSidedDie(1) -> resourceFetcher.fetchOne()
-        SixSidedDie(2) -> resourceFetcher.fetchTwo()
-        SixSidedDie(3) -> resourceFetcher.fetchThree()
-        SixSidedDie(4) -> resourceFetcher.fetchFour()
-        SixSidedDie(5) -> resourceFetcher.fetchFive()
-        SixSidedDie(6) -> resourceFetcher.fetchSix()
+    fun getImageResource(dice: SixSidedDice?) = when (dice) {
+        SixSidedDice(Dice.ONE) -> resourceFetcher.fetchOne()
+        SixSidedDice(Dice.TWO) -> resourceFetcher.fetchTwo()
+        SixSidedDice(Dice.THREE) -> resourceFetcher.fetchThree()
+        SixSidedDice(Dice.FOUR) -> resourceFetcher.fetchFour()
+        SixSidedDice(Dice.FIVE) -> resourceFetcher.fetchFive()
+        SixSidedDice(Dice.SIX) -> resourceFetcher.fetchSix()
         else -> resourceFetcher.fetchEmpty()
     }
 }

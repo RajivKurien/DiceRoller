@@ -2,27 +2,25 @@ package com.example.diceroller
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.CsvSource
 
 class ImageFinderTest {
 
-    @ParameterizedTest
-    @CsvSource("1", "2", "3", "4", "5", "6")
-    fun `returns image for each die`(value: Int) {
-        val unit = ImageFinder(ResourceFetcherStub)
-
-        assertEquals(value, unit.getImageResource(SixSidedDie(value)))
+    @Test
+    fun `returns image for each die`() {
+        val unit = ImageFinder(resourceFetcherStub)
+        Dice.values().forEach {
+            assertEquals(it.value, unit.getImageResource(SixSidedDice(it)))
+        }
     }
 
     @Test
     fun `returns empty image for null argument`() {
-        val unit = ImageFinder(ResourceFetcherStub)
+        val unit = ImageFinder(resourceFetcherStub)
 
         assertEquals(0, unit.getImageResource(null))
     }
 
-    val ResourceFetcherStub = object : ResourceFetcher {
+    private val resourceFetcherStub = object : ResourceFetcher {
         override fun fetchOne(): Int {
             return 1
         }
