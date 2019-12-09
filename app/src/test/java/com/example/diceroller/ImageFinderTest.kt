@@ -8,16 +8,7 @@ class ImageFinderTest {
     @Test
     fun `returns image for each die`() {
         val unit = ImageFinder(resourceFetcherStub)
-        Dice.values().forEach {
-            assertEquals(it.value, unit.getImageResource(SixSidedDice(it)))
-        }
-    }
-
-    @Test
-    fun `returns empty image for null argument`() {
-        val unit = ImageFinder(resourceFetcherStub)
-
-        assertEquals(0, unit.getImageResource(null))
+        Dice.values().forEach { assertEquals(it.value, unit.getDiceImage(it)) }
     }
 
     private val resourceFetcherStub = object : ResourceFetcher {
@@ -44,10 +35,5 @@ class ImageFinderTest {
         override fun fetchSix(): Int {
             return 6
         }
-
-        override fun fetchEmpty(): Int {
-            return 0
-        }
     }
-
 }

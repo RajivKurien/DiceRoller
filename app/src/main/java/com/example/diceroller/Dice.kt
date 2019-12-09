@@ -14,13 +14,9 @@ enum class Dice(val value: Int) {
             return values().first { it.value == value }
         }
 
-        fun nextFrom(dice: Dice): Dice {
+        fun countUp(dice: Dice): Dice {
             val nextDiceValue: Any = dice.value % MAX_DICE_VALUE + 1
             return values().first { it.value == nextDiceValue }
         }
     }
-}
-
-data class SixSidedDice(val value: Dice = Dice.randomDice()) {
-    fun countUp(): SixSidedDice = SixSidedDice(Dice.nextFrom(value))
 }

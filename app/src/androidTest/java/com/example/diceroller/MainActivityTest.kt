@@ -1,11 +1,6 @@
 package com.example.diceroller
 
-import android.content.res.Resources
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.drawable.Drawable
 import android.view.View
-import android.widget.ImageView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.click
@@ -28,80 +23,66 @@ class MainActivityTest {
     @get:Rule
     var activityRule = ActivityScenarioRule(MainActivity::class.java)
 
-
     @Test
     fun tappingResetDisplaysEmptyDiceImages() {
-        onView(withId(R.id.reset_button)).perform(click())
-        val viewInteraction: ViewInteraction = onView(withId(R.id.left_dice_image))
+        onView(withId(R.id.roll_button)).perform(click()) // roll dice and show images
+        onView(withId(R.id.reset_button)).perform(click()) // press reset
+        onView(withId(R.id.left_dice_image)).check(matches(TagMatcher(R.drawable.empty_dice)))
+        onView(withId(R.id.right_dice_image)).check(matches(TagMatcher(R.drawable.empty_dice)))
+    }
 
-//        viewInteraction.check(matches(DrawableMatcher(R.drawable.empty_dice)))
-//        viewInteraction.check(matches(withTagKey(R.drawable.empty_dice)))
-        viewInteraction.check(matches(TagMatcher(R.drawable.empty_dice)))
+    @Test
+    fun countUpDisplaysNextImage() {
+        val currentLeftImage = getCurrentImageTag(onView(withId(R.id.left_dice_image)))
+        val currentRightImage = getCurrentImageTag(onView(withId(R.id.right_dice_image)))
+
+        onView(withId(R.id.count_up_button)).perform(click())
+
+        val expectedLeftImage = getNextImageTag(currentLeftImage)
+        val expectedRightImage = getNextImageTag(currentRightImage)
+        onView(withId(R.id.left_dice_image)).check(matches(TagMatcher(expectedLeftImage)))
+        onView(withId(R.id.right_dice_image)).check(matches(TagMatcher(expectedRightImage)))
+    }
+
+    private fun getNextImageTag(tag: Int): Int = when (tag) {
+        R.drawable.dice_1 -> R.drawable.dice_2
+        R.drawable.dice_2 -> R.drawable.dice_3
+        R.drawable.dice_3 -> R.drawable.dice_4
+        R.drawable.dice_4 -> R.drawable.dice_5
+        R.drawable.dice_5 -> R.drawable.dice_6
+        R.drawable.dice_6 -> R.drawable.dice_1
+        else -> 0
+    }
+
+    private fun getCurrentImageTag(onView: ViewInteraction): Int {
+        val currentImage = TagSaver()
+        onView.check(matches(currentImage))
+        return currentImage.diceTag
+    }
+
+
+}
+
+class TagSaver : TypeSafeMatcher<View>() {
+    var diceTag: Int = 0
+
+    override fun describeTo(description: Description?) {
+        description?.appendText("Getting current image tag")
+    }
+
+    override fun matchesSafely(view: View?): Boolean {
+        diceTag = view?.tag as Int
+        return true
     }
 }
 
 class TagMatcher(private val expectedTag: Int) : TypeSafeMatcher<View?>(View::class.java) {
-    override fun matchesSafely(item: View?): Boolean {
-        return item?.tag == expectedTag
+    override fun matchesSafely(view: View?): Boolean {
+        return view?.tag == expectedTag
     }
 
     override fun describeTo(description: Description?) {
         description?.appendText("with tag from resource id: ")
         description?.appendValue(expectedTag)
     }
-}
-
-class DrawableMatcher internal constructor(private val expectedId: Int) :
-    TypeSafeMatcher<View?>(View::class.java) {
-    private var resourceName: String? = null
-
-    override fun matchesSafely(target: View?): Boolean {
-        if (target !is ImageView) {
-            return false
-        }
-        when (expectedId) {
-            EMPTY -> {
-                return target.drawable == null
-            }
-            ANY -> {
-                return target.drawable != null
-            }
-            else -> {
-                val resources: Resources = target.getContext().resources
-                val expectedDrawable: Drawable = resources.getDrawable(expectedId, null)
-                resourceName = resources.getResourceEntryName(expectedId)
-                val bitmap = getBitmap(target.drawable)
-                val otherBitmap = getBitmap(expectedDrawable)
-                return bitmap.sameAs(otherBitmap)
-            }
-        }
-    }
-
-    private fun getBitmap(drawable: Drawable): Bitmap {
-        val bitmap = Bitmap.createBitmap(
-            drawable.intrinsicWidth,
-            drawable.intrinsicHeight,
-            Bitmap.Config.ARGB_8888
-        )
-        val canvas = Canvas(bitmap)
-        drawable.setBounds(0, 0, canvas.width, canvas.height)
-        drawable.draw(canvas)
-        return bitmap
-    }
-
-    override fun describeTo(description: Description) {
-        description.appendText("with drawable from resource id: ")
-        description.appendValue(expectedId)
-        if (resourceName != null) {
-            description.appendText("[")
-            description.appendText(resourceName)
-            description.appendText("]")
-        }
-    }
-
-    companion object {
-        const val EMPTY = -1
-        const val ANY = -2
-    }
-
 }

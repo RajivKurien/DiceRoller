@@ -5,27 +5,27 @@ import androidx.lifecycle.ViewModel
 
 class DiceViewModel(
     private val imageFinder: ImageFinder,
-    leftDice: SixSidedDice = SixSidedDice(),
-    rightDice: SixSidedDice = SixSidedDice()
+    leftDice: Dice = Dice.randomDice(),
+    rightDice: Dice = Dice.randomDice()
 ) : ViewModel() {
 
     val liveData: MutableLiveData<DiceRollerEvent> =
         MutableLiveData(
             DiceRollerEvent.NewDice(
                 twoDice = TwoDice(leftDice, rightDice),
-                leftImage = imageFinder.getDiceImage(leftDice.value),
-                rightImage = imageFinder.getDiceImage(rightDice.value)
+                leftImage = imageFinder.getDiceImage(leftDice),
+                rightImage = imageFinder.getDiceImage(rightDice)
             )
         )
 
     fun roll() {
-        val leftDice = SixSidedDice()
-        val rightDice = SixSidedDice()
+        val leftDice = Dice.randomDice()
+        val rightDice = Dice.randomDice()
 
         val diceRollerEvent = DiceRollerEvent.NewDice(
             twoDice = TwoDice(leftDice, rightDice),
-            leftImage = imageFinder.getDiceImage(leftDice.value),
-            rightImage = imageFinder.getDiceImage(rightDice.value)
+            leftImage = imageFinder.getDiceImage(leftDice),
+            rightImage = imageFinder.getDiceImage(rightDice)
         )
 
         liveData.postValue(diceRollerEvent)
@@ -38,13 +38,13 @@ class DiceViewModel(
     fun countUp() {
         when (val currentEvent = liveData.value) {
             is DiceRollerEvent.NewDice -> {
-                val leftDice = currentEvent.twoDice.leftDice.countUp()
-                val rightDice = currentEvent.twoDice.rightDice.countUp()
+                val leftDice = Dice.countUp(currentEvent.twoDice.leftDice)
+                val rightDice = Dice.countUp(currentEvent.twoDice.rightDice)
 
                 val diceRollerEvent = DiceRollerEvent.NewDice(
                     twoDice = TwoDice(leftDice, rightDice),
-                    leftImage = imageFinder.getDiceImage(leftDice.value),
-                    rightImage = imageFinder.getDiceImage(rightDice.value)
+                    leftImage = imageFinder.getDiceImage(leftDice),
+                    rightImage = imageFinder.getDiceImage(rightDice)
                 )
 
                 liveData.postValue(diceRollerEvent)
@@ -60,5 +60,4 @@ sealed class DiceRollerEvent {
     object Reset : DiceRollerEvent()
 }
 
-data class TwoDice(val leftDice: SixSidedDice, val rightDice: SixSidedDice)
-
+data class TwoDice(val leftDice: Dice, val rightDice: Dice)

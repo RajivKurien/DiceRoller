@@ -35,13 +35,14 @@ class MainActivity : AppCompatActivity() {
         welcomeToast(this.applicationContext)
     }
 
-    private fun updateDiceImages(diceRollerEvent: DiceRollerEvent) =
-        when (val event = diceRollerEvent) {
+    private fun updateDiceImages(event: DiceRollerEvent) {
+        return when (event) {
             is DiceRollerEvent.Reset ->
                 updateDiceDrawables(R.drawable.empty_dice, R.drawable.empty_dice)
             is DiceRollerEvent.NewDice ->
                 updateDiceDrawables(event.leftImage, event.rightImage)
         }
+    }
 
     private fun updateDiceDrawables(
         @DrawableRes leftDrawable: Int,
@@ -102,5 +103,4 @@ class AndroidDiceImageResourceFetcher : ResourceFetcher {
     override fun fetchFour() = R.drawable.dice_4
     override fun fetchFive() = R.drawable.dice_5
     override fun fetchSix() = R.drawable.dice_6
-    override fun fetchEmpty() = R.drawable.empty_dice
 }

@@ -7,24 +7,9 @@ interface ResourceFetcher {
     fun fetchFour(): Int
     fun fetchFive(): Int
     fun fetchSix(): Int
-    fun fetchEmpty(): Int
 }
 
 class ImageFinder(private val resourceFetcher: ResourceFetcher) {
-//    fun getImageResource(diceRollerEvent: DiceRollerEvent): Int {
-//
-//
-//        return when (val event = diceRollerEvent) {
-//            is DiceRollerEvent.Reset -> {
-//                resourceFetcher.fetchEmpty()
-//            }
-//            is DiceRollerEvent.NewDice -> {
-//                getDiceImage(event.twoDice.leftDice.value)
-//                getDiceImage(event.twoDice.rightDice.value)
-//            }
-//        }
-//    }
-
     fun getDiceImage(dice: Dice): Int =
         when (dice) {
             Dice.ONE -> resourceFetcher.fetchOne()
