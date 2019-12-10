@@ -12,13 +12,13 @@ import com.example.diceroller.databinding.ActivityMainBinding
 import java.time.Instant
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    private val resourceFinder = ImageFinder(AndroidDiceImageResourceFetcher())
-    private var diceViewModel = DiceViewModel(resourceFinder)
+    private var diceViewModel = DiceViewModel(ImageFinder(AndroidDiceImageResourceFetcher()))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,11 +35,11 @@ class MainActivity : AppCompatActivity() {
         welcomeToast(this.applicationContext)
     }
 
-    private fun updateDiceImages(event: DiceRollerEvent) {
+    private fun updateDiceImages(event: DiceRollEvent) {
         return when (event) {
-            is DiceRollerEvent.Reset ->
+            is DiceRollEvent.Reset ->
                 updateDiceDrawables(R.drawable.empty_dice, R.drawable.empty_dice)
-            is DiceRollerEvent.NewDice ->
+            is DiceRollEvent.NewDice ->
                 updateDiceDrawables(event.leftImage, event.rightImage)
         }
     }
@@ -62,9 +62,6 @@ class MainActivity : AppCompatActivity() {
         diceViewModel.reset()
     }
 
-    private fun welcomeToast(context: Context) =
-        Toast.makeText(context, daytimeMessage(), Toast.LENGTH_SHORT).show()
-
     private fun rollDice() {
         diceViewModel.roll()
     }
@@ -73,27 +70,32 @@ class MainActivity : AppCompatActivity() {
         diceViewModel.countUp()
     }
 
+    private fun welcomeToast(context: Context) =
+        Toast.makeText(context, daytimeMessage(), Toast.LENGTH_SHORT).show()
+
     private fun daytimeMessage(): String {
         val time = getCurrentHours()
-        return "Good ${when {
-            time < 12 -> getString(R.string.Morning)
-            time < 18 -> getString(R.string.Afternoon)
-            else -> getString(R.string.Evening)
-        }}"
-    }
-
-    private fun getCurrentHours(): Int {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            DateTimeFormatter
-                .ofPattern("HH")
-                .withZone(ZoneOffset.UTC)
-                .format(Instant.now())
-                .toInt()
-        } else {
-            TODO("VERSION.SDK_INT < O")
+        return when {
+            time < 12 -> getString(R.string.good_morning)
+            time < 18 -> getString(R.string.good_afternoon)
+            else -> getString(R.string.good_evening)
         }
     }
 
+    private fun getCurrentHours(): Int {
+        return when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
+                DateTimeFormatter
+                    .ofPattern("HH")
+                    .withZone(ZoneOffset.UTC)
+                    .format(Instant.now())
+                    .toInt()
+            }
+            else -> {
+                Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+            }
+        }
+    }
 }
 
 class AndroidDiceImageResourceFetcher : ResourceFetcher {

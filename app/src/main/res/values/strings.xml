@@ -2,8 +2,10 @@
     <string name="app_name">DiceRoller</string>
     <string name="roll_label">Roll</string>
     <string name="count_up">Count Up</string>
-    <string name="Morning">Morning!</string>
-    <string name="Afternoon">Afternoon!</string>
-    <string name="Evening">Evening!</string>
+    <string name="good_morning">Good Morning!</string>
+    <string name="good_afternoon">Good Afternoon!</string>
+    <string name="good_evening">Bon Evening!</string>
     <string name="reset">Reset</string>
+    <string name="left_dice_description">left dice</string>
+    <string name="right_dice_description">right dice</string>
 </resources>
