@@ -18,14 +18,14 @@ class GridViewAdapter(private val viewModel: DiceViewModel) :
 
     override fun getItemCount() =
         when (val event = viewModel.liveData.value) {
-            is DiceRollEvent.NewDice -> event.list.size
+            is DiceEvent -> event.list.size
             else -> 0
         }
 
 
     override fun onBindViewHolder(holder: DiceViewHolder, position: Int) {
         when (val event = viewModel.liveData.value) {
-            is DiceRollEvent.NewDice -> holder.imageView.setImageResource(event.list[position].image)
+            is DiceEvent -> holder.imageView.setImageResource(event.list[position].image)
             else -> holder.imageView.setImageResource(R.drawable.empty_dice)
         }
 
