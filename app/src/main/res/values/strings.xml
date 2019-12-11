@@ -8,4 +8,5 @@
     <string name="reset">Reset</string>
     <string name="left_dice_description">left dice</string>
     <string name="right_dice_description">right dice</string>
+    <string name="dice_description">a dice</string>
 </resources>

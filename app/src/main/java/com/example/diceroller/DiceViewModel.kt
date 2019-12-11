@@ -1,55 +1,48 @@
 package com.example.diceroller
 
+import androidx.annotation.DrawableRes
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
+
+data class DiceEvent(val list: List<DiceModel> = emptyList())
+
 class DiceViewModel(
     private val imageFinder: ImageFinder,
-    val liveData: MutableLiveData<DiceRollEvent> = MutableLiveData(DiceRollEvent.Reset)
+    val liveData: MutableLiveData<DiceEvent> = MutableLiveData(DiceEvent())
 ) : ViewModel() {
 
-    fun roll() {
-        liveData.postValue(newDice(Dice.randomDice(), Dice.randomDice()))
+    fun roll() = liveData.postValue(newSetOfNineDice())
+
+    private fun newSetOfNineDice(): DiceEvent {
+        return DiceEvent((0..9).map {
+            val dice = Dice.randomDice()
+            DiceModel(it, dice, imageFinder.getDiceImage(dice))
+        }.toList())
     }
 
     fun reset() {
-        liveData.postValue(DiceRollEvent.Reset)
+        liveData.postValue(DiceEvent(emptyList()))
     }
 
     fun countUp() {
         when (val event = liveData.value) {
-            is DiceRollEvent.NewDice -> {
-                event.twoDice.apply {
-                    liveData.postValue(newDice(Dice.countUp(leftDice), Dice.countUp(rightDice)))
-                }
-            }
+            is DiceEvent -> liveData.postValue(
+                DiceEvent((event).list
+                    .map {
+                        val dice = Dice.countUp(it.dice)
+                        DiceModel(it.id, dice, imageFinder.getDiceImage(dice))
+                    }
+                ))
         }
     }
 
-    fun rollLeft() {
-        when (val event = liveData.value) {
-            is DiceRollEvent.NewDice -> {
-                event.twoDice.apply {
-                    liveData.postValue(newDice(Dice.randomDice(), rightDice))
-                }
-            }
-        }
-    }
-
-    private fun newDice(leftDice: Dice, rightDice: Dice): DiceRollEvent.NewDice {
-        return DiceRollEvent.NewDice(
-            twoDice = TwoDice(leftDice, rightDice),
-            leftImage = imageFinder.getDiceImage(leftDice),
-            rightImage = imageFinder.getDiceImage(rightDice)
-        )
+    fun rollDice(position: Int) {
+        val dice = Dice.randomDice()
+        val newList = (liveData.value?.list ?: emptyList()).toMutableList()
+        newList[position] = DiceModel(position, dice, imageFinder.getDiceImage(dice))
+        liveData.postValue(DiceEvent(newList))
     }
 }
 
-sealed class DiceRollEvent {
-    data class NewDice(val twoDice: TwoDice, val leftImage: Int, val rightImage: Int) :
-        DiceRollEvent()
-
-    object Reset : DiceRollEvent()
-}
-
-data class TwoDice(val leftDice: Dice, val rightDice: Dice)
+data class DiceModel(val id: Int, val dice: Dice, @DrawableRes val image: Int)

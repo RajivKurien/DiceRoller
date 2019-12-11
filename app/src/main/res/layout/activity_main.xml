@@ -12,6 +12,18 @@
         android:orientation="vertical"
         tools:context=".MainActivity">
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="373dp"
+            android:layout_height="466dp"
+            android:layout_margin="@dimen/default_padding"
+            app:layout_constraintBottom_toTopOf="@+id/roll_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
         <ImageView
             android:id="@+id/left_dice_image"
             android:layout_width="wrap_content"
@@ -20,6 +32,7 @@
             android:layout_marginTop="100dp"
             android:layout_marginBottom="100dp"
             android:contentDescription="@string/left_dice_description"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -35,10 +48,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:contentDescription="@string/right_dice_description"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="@+id/left_dice_image"
-            app:layout_constraintTop_toTopOf="@+id/left_dice_image"
+            app:layout_constraintStart_toStartOf="@id/left_dice_image"
+            app:layout_constraintTop_toTopOf="@id/left_dice_image"
             app:srcCompat="@drawable/empty_dice"
             tools:srcCompat="@drawable/dice_1" />
 
@@ -76,7 +90,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/left_dice_image"
-            app:layout_constraintVertical_bias="0.43" />
+            app:layout_constraintVertical_bias="0.81" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
