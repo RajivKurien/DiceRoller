@@ -6,8 +6,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import com.example.diceroller.R.drawable.*
-import com.example.diceroller.R.id.*
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -21,33 +19,33 @@ class MainActivityTest {
     var activityRule = ActivityScenarioRule(MainActivity::class.java)
 
     @Test
-    fun startsWithNoDice() {
-        leftDice().check(matchesTag(empty_dice))
-        rightDice().check(matchesTag(empty_dice))
-    }
-
-    @Test
     fun tappingRollDisplaysDiceImages() {
         rollButton().perform(click()) // roll dice and show images
 
-        leftDice().check(notMatchesTag(empty_dice))
-        rightDice().check(notMatchesTag(empty_dice))
+        leftDice().check(notMatchesTag(R.drawable.empty_dice))
+        rightDice().check(notMatchesTag(R.drawable.empty_dice))
+    }
+
+    @Test
+    fun startsWithNoDice() {
+        leftDice().check(matchesTag(R.drawable.empty_dice))
+        rightDice().check(matchesTag(R.drawable.empty_dice))
     }
 
     @Test
     fun tappingResetDisplaysEmptyDiceImages() {
         resetButton().perform(click())
 
-        leftDice().check(matchesTag(empty_dice))
-        rightDice().check(matchesTag(empty_dice))
+        leftDice().check(matchesTag(R.drawable.empty_dice))
+        rightDice().check(matchesTag(R.drawable.empty_dice))
     }
 
     @Test
     fun countUpDoesNothingWhenNoDiceInitially() {
         countUpButton().perform(click())
 
-        leftDice().check(matchesTag(empty_dice))
-        rightDice().check(matchesTag(empty_dice))
+        leftDice().check(matchesTag(R.drawable.empty_dice))
+        rightDice().check(matchesTag(R.drawable.empty_dice))
     }
 
     @Test
@@ -62,19 +60,19 @@ class MainActivityTest {
         rightDice().check(matchesTag(expectedRight))
     }
 
-    private fun leftDice() = onView(withId(left_dice_image))
-    private fun rightDice() = onView(withId(right_dice_image))
-    private fun rollButton() = onView(withId(roll_button))
-    private fun resetButton() = onView(withId(reset_button))
-    private fun countUpButton() = onView(withId(count_up_button))
+    private fun leftDice() = onView(withId(R.id.left_dice_image))
+    private fun rightDice() = onView(withId(R.id.right_dice_image))
+    private fun rollButton() = onView(withId(R.id.roll_button))
+    private fun resetButton() = onView(withId(R.id.reset_button))
+    private fun countUpButton() = onView(withId(R.id.count_up_button))
 
     private fun nextDice(tag: Int): Int = when (tag) {
-        dice_1 -> dice_2
-        dice_2 -> dice_3
-        dice_3 -> dice_4
-        dice_4 -> dice_5
-        dice_5 -> dice_6
-        dice_6 -> dice_1
+        R.drawable.dice_1 -> R.drawable.dice_2
+        R.drawable.dice_2 -> R.drawable.dice_3
+        R.drawable.dice_3 -> R.drawable.dice_4
+        R.drawable.dice_4 -> R.drawable.dice_5
+        R.drawable.dice_5 -> R.drawable.dice_6
+        R.drawable.dice_6 -> R.drawable.dice_1
         else -> 0
     }
 }
