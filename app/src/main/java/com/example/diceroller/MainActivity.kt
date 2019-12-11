@@ -28,6 +28,7 @@ class MainActivity : AppCompatActivity() {
             rollButton.setOnClickListener { rollDice() }
             countUpButton.setOnClickListener { countUp() }
             resetButton.setOnClickListener { reset() }
+            leftDiceImage.setOnClickListener { diceViewModel.rollLeft() }
         }
 
         diceViewModel.liveData.observe(this, Observer { updateDiceImages(it) })

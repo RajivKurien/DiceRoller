@@ -26,6 +26,16 @@ class DiceViewModel(
         }
     }
 
+    fun rollLeft() {
+        when (val event = liveData.value) {
+            is DiceRollEvent.NewDice -> {
+                event.twoDice.apply {
+                    liveData.postValue(newDice(Dice.randomDice(), rightDice))
+                }
+            }
+        }
+    }
+
     private fun newDice(leftDice: Dice, rightDice: Dice): DiceRollEvent.NewDice {
         return DiceRollEvent.NewDice(
             twoDice = TwoDice(leftDice, rightDice),

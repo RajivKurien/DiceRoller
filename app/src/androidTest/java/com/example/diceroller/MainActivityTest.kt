@@ -19,6 +19,16 @@ class MainActivityTest {
     var activityRule = ActivityScenarioRule(MainActivity::class.java)
 
     @Test
+    fun tappingLeftDiceShouldRollNewOne() {
+        rollButton().perform(click())
+        val initialLeft = getImageTag(leftDice())
+
+        repeat(6) { leftDice().perform(click()) }
+
+        leftDice().check(notMatchesTag(initialLeft))
+    }
+
+    @Test
     fun tappingRollDisplaysDiceImages() {
         rollButton().perform(click()) // roll dice and show images
 

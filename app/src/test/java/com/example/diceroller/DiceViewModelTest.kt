@@ -23,21 +23,21 @@ class DiceViewModelTest {
     }
 
     @Test
-    fun rollPostsNewDiceEvent() {
+    fun `roll posts a NewDice event`() {
         diceViewModel.roll()
 
         assert(event.captured is NewDice)
     }
 
     @Test
-    fun resetPostsResetEvent() {
+    fun `reset posts a Reset event`() {
         diceViewModel.reset()
 
         assert(event.captured is Reset)
     }
 
     @Test
-    fun coutUpPostsNewDiceForNewDiceEvent() {
+    fun `countUp posts a NewDice event when given a NewDice event`() {
         every { liveData.value } answers { NewDice(TwoDice(Dice.ONE, Dice.ONE), 0, 0) }
 
         diceViewModel.countUp()
@@ -46,12 +46,21 @@ class DiceViewModelTest {
     }
 
     @Test
-    fun countUpDoesNotPostForResetEvent() {
+    fun `countUp does not post when given a Reset event`() {
         every { liveData.value } answers { Reset }
 
         diceViewModel.countUp()
 
         verify(exactly = 0) { liveData.postValue(any()) }
+    }
+
+    @Test
+    fun `rollLeft posts a NewDice event only for left dice when given a NewDice event`() {
+        every { liveData.value } answers { NewDice(TwoDice(Dice.ONE, Dice.ONE), 0, 0) }
+
+        diceViewModel.rollLeft()
+
+        assert((event.captured as NewDice).twoDice.rightDice == Dice.ONE)
     }
 
     private inline fun <reified T : Any> relaxedMock() = mockk<T>(relaxed = true)
